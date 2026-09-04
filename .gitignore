@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment/secrets
+.env
+.env.*
+!.env.example
+
+# AWS credentials and keys
+*.pem
+*.key
+.aws/
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local databases / generated data
+chroma/
+*.db
+
+# Docker
+docker-compose.override.yml

@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+
+  data-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.data_service
+    ports:
+      - "5002:5002"
+    networks:
+      - study-assistant-net
+
+  llm-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.llm_service
+    ports:
+      - "5003:5003"
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - study-assistant-net
+
+  retrieval-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.retrieval_service
+    ports:
+      - "5001:5001"
+    environment:
+      - LLM_SERVICE_URL=http://llm-service:5003
+      - DATA_SERVICE_URL=http://data-service:5002
+    depends_on:
+      - llm-service
+      - data-service
+    networks:
+      - study-assistant-net
+
+  application-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.application_service
+    ports:
+      - "5000:5000"
+    environment:
+      - RETRIEVAL_SERVICE_URL=http://retrieval-service:5001
+      - LLM_SERVICE_URL=http://llm-service:5003
+      - DATA_SERVICE_URL=http://data-service:5002
+    depends_on:
+      - retrieval-service
+      - llm-service
+      - data-service
+    networks:
+      - study-assistant-net
+
+networks:
+  study-assistant-net:
+    driver: bridge

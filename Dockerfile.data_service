@@ -1,0 +1,8 @@
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements_docker.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+COPY data_service.py .
+COPY knowledge_base.json .
+EXPOSE 5002
+CMD ["python", "data_service.py"]

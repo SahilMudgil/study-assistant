@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Study Assistant Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Georgia, "Times New Roman", serif;
+            background: #f5f1e8;
+            color: #29251f;
+            min-height: 100vh;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 280px;
+            background: #25221e;
+            color: #f5f1e8;
+            padding: 30px 22px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border: 1px solid #c8b99a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .logo h1 {
+            font-size: 19px;
+            font-weight: normal;
+        }
+
+        .logo p {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #b8afa0;
+            margin-top: 3px;
+        }
+
+        .section-title {
+            font-family: Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 10px;
+            color: #968d7f;
+            margin-bottom: 13px;
+        }
+
+        /* ================= SERVICES ================= */
+
+        .services {
+            margin-bottom: 35px;
+        }
+
+        .service {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 10px;
+            border-bottom: 1px solid #3a3630;
+        }
+
+        .service-name {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+        }
+
+        .service-port {
+            color: #8d8578;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+
+        .status {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #777;
+        }
+
+        .status.online {
+            background: #7fa878;
+            box-shadow: 0 0 7px rgba(127, 168, 120, 0.6);
+        }
+
+        .status.offline {
+            background: #b05a52;
+        }
+
+        /* ================= SIDEBAR INFO ================= */
+
+        .sidebar-note {
+            border: 1px solid #3d3932;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            line-height: 1.6;
+            color: #aaa295;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+            padding: 42px 55px;
+            max-width: 1300px;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header-label {
+            font-family: Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 10px;
+            color: #887e6d;
+            margin-bottom: 9px;
+        }
+
+        .header h2 {
+            font-size: 34px;
+            font-weight: normal;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-family: Arial, sans-serif;
+            color: #70695e;
+            font-size: 14px;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: #fffdf8;
+            border: 1px solid #ded6c8;
+            padding: 21px;
+            position: relative;
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #8b7b61;
+        }
+
+        .stat-label {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+            color: #817768;
+            margin-bottom: 9px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+        }
+
+        /* ================= QUESTION AREA ================= */
+
+        .question-section {
+            background: #fffdf8;
+            border: 1px solid #ded6c8;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .question-title {
+            font-size: 21px;
+            margin-bottom: 18px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 115px;
+            resize: vertical;
+            border: 1px solid #d2c8b8;
+            background: #faf7ef;
+            padding: 15px;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 15px;
+            color: #29251f;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #8b7b61;
+        }
+
+        .ask-row {
+            margin-top: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hint {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #8a8276;
+        }
+
+        button {
+            background: #29251f;
+            color: #fffdf8;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.4px;
+        }
+
+        button:hover {
+            background: #49433a;
+        }
+
+        button:disabled {
+            background: #999186;
+            cursor: wait;
+        }
+
+        /* ================= ANSWER ================= */
+
+        .answer-section {
+            display: none;
+            background: #fffdf8;
+            border: 1px solid #ded6c8;
+            margin-bottom: 30px;
+        }
+
+        .answer-header {
+            padding: 18px 25px;
+            border-bottom: 1px solid #e1d9cc;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            color: #756c5e;
+        }
+
+        .answer-body {
+            padding: 25px;
+            font-size: 16px;
+            line-height: 1.75;
+            white-space: pre-wrap;
+        }
+
+        /* ================= SOURCES ================= */
+
+        .sources-section {
+            display: none;
+        }
+
+        .sources-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .source-card {
+            background: #fffdf8;
+            border: 1px solid #ded6c8;
+            padding: 17px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .source-name {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .source-page {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #82796d;
+            margin-top: 5px;
+        }
+
+        .similarity {
+            min-width: 85px;
+            text-align: right;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #6f6659;
+        }
+
+        /* ================= LOADING ================= */
+
+        .loading {
+            display: none;
+            padding: 20px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #81786b;
+        }
+
+        .error {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border: 1px solid #c9a5a0;
+            background: #f8eeec;
+            color: #7c3933;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 850px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .app {
+                display: block;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 30px 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">📖</div>
+
+            <div>
+                <h1>Study Assistant</h1>
+                <p>Generative AI Course</p>
+            </div>
+        </div>
+
+        <div class="services">
+
+            <div class="section-title">
+                System Status
+            </div>
+
+            <div class="service">
+                <div>
+                    <span class="service-name">Application</span>
+                    <span class="service-port">:5000</span>
+                </div>
+                <div class="status" id="status-5000"></div>
+            </div>
+
+            <div class="service">
+                <div>
+                    <span class="service-name">Retrieval</span>
+                    <span class="service-port">:5001</span>
+                </div>
+                <div class="status" id="status-5001"></div>
+            </div>
+
+            <div class="service">
+                <div>
+                    <span class="service-name">Data</span>
+                    <span class="service-port">:5002</span>
+                </div>
+                <div class="status" id="status-5002"></div>
+            </div>
+
+            <div class="service">
+                <div>
+                    <span class="service-name">LLM</span>
+                    <span class="service-port">:5003</span>
+                </div>
+                <div class="status" id="status-5003"></div>
+            </div>
+
+        </div>
+
+        <div class="section-title">
+            Architecture
+        </div>
+
+        <div class="sidebar-note">
+            Question → Retrieval → Context → LLM → Answer
+            <br><br>
+            Embeddings are generated with
+            <strong>nomic-embed-text</strong>.
+            <br><br>
+            Generation is handled by
+            <strong>Qwen 2.5 1.5B</strong>.
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main">
+
+        <div class="header">
+
+            <div class="header-label">
+                Personal Learning Environment
+            </div>
+
+            <h2>Course Knowledge Assistant</h2>
+
+            <p>
+                Ask questions from your Generative AI lecture material.
+            </p>
+
+        </div>
+
+
+        <!-- ================= STATS ================= -->
+
+        <div class="stats">
+
+            <div class="stat-card">
+                <div class="stat-label">
+                    Knowledge Chunks
+                </div>
+
+                <div class="stat-value" id="total-chunks">
+                    —
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">
+                    Source PDFs
+                </div>
+
+                <div class="stat-value" id="total-sources">
+                    —
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ================= QUESTION ================= -->
+
+        <section class="question-section">
+
+            <div class="question-title">
+                Ask a Study Question
+            </div>
+
+            <textarea
+                id="question"
+                placeholder="For example: What is RLHF and why is it used to align large language models?"
+            ></textarea>
+
+            <div class="ask-row">
+
+                <div class="hint">
+                    Press Ctrl + Enter to submit
+                </div>
+
+                <button id="ask-button" onclick="askQuestion()">
+                    Ask Assistant
+                </button>
+
+            </div>
+
+            <div class="loading" id="loading">
+                Searching lecture material and generating answer...
+            </div>
+
+            <div class="error" id="error"></div>
+
+        </section>
+
+
+        <!-- ================= ANSWER ================= -->
+
+        <section class="answer-section" id="answer-section">
+
+            <div class="answer-header">
+                Assistant Answer
+            </div>
+
+            <div class="answer-body" id="answer"></div>
+
+        </section>
+
+
+        <!-- ================= SOURCES ================= -->
+
+        <section class="sources-section" id="sources-section">
+
+            <div class="sources-title">
+                Retrieved Sources
+            </div>
+
+            <div id="sources"></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    const API_BASE = "http://localhost:5000";
+
+
+    // ==========================================
+    // SERVICE HEALTH CHECK
+    // ==========================================
+
+    const services = [
+        5000,
+        5001,
+        5002,
+        5003
+    ];
+
+    async function checkService(port) {
+
+        const indicator =
+            document.getElementById(`status-${port}`);
+
+        try {
+
+            const response = await fetch(
+                `http://localhost:${port}/health`,
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
+
+            if (response.ok) {
+                indicator.classList.remove("offline");
+                indicator.classList.add("online");
+            } else {
+                indicator.classList.remove("online");
+                indicator.classList.add("offline");
+            }
+
+        } catch (error) {
+
+            indicator.classList.remove("online");
+            indicator.classList.add("offline");
+
+        }
+    }
+
+
+    function checkAllServices() {
+
+        services.forEach(port => {
+            checkService(port);
+        });
+
+    }
+
+
+    // Check immediately
+    checkAllServices();
+
+
+    // ==========================================
+    // LOAD KNOWLEDGE BASE STATISTICS
+    // ==========================================
+
+    async function loadStats() {
+
+        try {
+
+            const response =
+                await fetch(`${API_BASE}/stats`);
+
+            if (!response.ok) {
+                throw new Error("Could not load statistics.");
+            }
+
+            const data =
+                await response.json();
+
+            document.getElementById("total-chunks")
+                .textContent = data.total_chunks;
+
+            document.getElementById("total-sources")
+                .textContent = data.total_sources;
+
+        } catch (error) {
+
+            document.getElementById("total-chunks")
+                .textContent = "—";
+
+            document.getElementById("total-sources")
+                .textContent = "—";
+
+        }
+
+    }
+
+    loadStats();
+
+
+    // ==========================================
+    // ASK QUESTION
+    // ==========================================
+
+    async function askQuestion() {
+
+        const questionInput =
+            document.getElementById("question");
+
+        const question =
+            questionInput.value.trim();
+
+        const button =
+            document.getElementById("ask-button");
+
+        const loading =
+            document.getElementById("loading");
+
+        const errorBox =
+            document.getElementById("error");
+
+        const answerSection =
+            document.getElementById("answer-section");
+
+        const sourcesSection =
+            document.getElementById("sources-section");
+
+        if (!question) {
+
+            errorBox.textContent =
+                "Please enter a study question.";
+
+            errorBox.style.display = "block";
+
+            return;
+        }
+
+
+        errorBox.style.display = "none";
+
+        answerSection.style.display = "none";
+
+        sourcesSection.style.display = "none";
+
+        loading.style.display = "block";
+
+        button.disabled = true;
+
+        button.textContent = "Thinking...";
+
+
+        try {
+
+    const controller = new AbortController();
+
+    const timeout = setTimeout(() => {
+        controller.abort();
+    }, 60000); // 2 minutes
+
+    const response = await fetch(
+        `${API_BASE}/ask`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                question: question
+            }),
+
+            signal: controller.signal
+        }
+    );
+
+    clearTimeout(timeout);
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Server returned HTTP ${response.status}`
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            // Display answer
+
+            document.getElementById("answer")
+                .textContent = data.answer || "No answer returned.";
+
+            answerSection.style.display = "block";
+
+
+            // Display sources
+
+            const sourcesContainer =
+                document.getElementById("sources");
+
+            sourcesContainer.innerHTML = "";
+
+
+            if (data.sources && data.sources.length > 0) {
+
+                data.sources.forEach(source => {
+
+                    const card =
+                        document.createElement("div");
+
+                    card.className = "source-card";
+
+
+                    const information =
+                        document.createElement("div");
+
+                    const name =
+                        document.createElement("div");
+
+                    name.className = "source-name";
+
+                    name.textContent =
+                        source.source;
+
+
+                    const page =
+                        document.createElement("div");
+
+                    page.className = "source-page";
+
+                    page.textContent =
+                        `Lecture page ${source.page}`;
+
+
+                    information.appendChild(name);
+
+                    information.appendChild(page);
+
+
+                    const similarity =
+                        document.createElement("div");
+
+                    similarity.className = "similarity";
+
+                    similarity.textContent =
+                        `${(source.similarity * 100).toFixed(1)}% match`;
+
+
+                    card.appendChild(information);
+
+                    card.appendChild(similarity);
+
+                    sourcesContainer.appendChild(card);
+
+                });
+
+
+                sourcesSection.style.display = "block";
+
+            }
+
+        } catch (error) {
+
+    if (error.name === "AbortError") {
+
+        errorBox.textContent =
+            "The request took too long. The LLM may be busy or the VM may be low on memory.";
+
+    } else {
+
+        errorBox.textContent =
+            "Could not connect to the Study Assistant. Make sure the Docker services are running.";
+
+    }
+
+    errorBox.style.display = "block";
+
+    console.error(error);
+
+        } finally {
+
+            loading.style.display = "none";
+
+            button.disabled = false;
+
+            button.textContent = "Ask Assistant";
+
+        }
+
+    }
+
+
+    // ==========================================
+    // CTRL + ENTER TO ASK
+    // ==========================================
+
+    document
+        .getElementById("question")
+        .addEventListener("keydown", function(event) {
+
+            if (event.ctrlKey && event.key === "Enter") {
+
+                askQuestion();
+
+            }
+
+        });
+
+</script>
+
+</body>
+</html>
